@@ -1,0 +1,7 @@
+public class Main {
+    public static int defaultCardsAmount = 6;
+
+    public static void main(String[] args) {
+        new GameTable();
+    }
+}

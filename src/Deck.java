@@ -1,24 +1,28 @@
 import java.util.*;
 
-public class Deck {
-    List<Card> deck = new LinkedList<>();
+class Deck {
+    public static Stack<Card> cards = new Stack<>();
+    private Suit trump;
 
-    public Deck(int trump){
-        for(int i = Suit.heart; i < Suit.spade + 1; i++){
-            for(int j = Value.six; j < Value.ace + 1; j++){
-                deck.add(new Card(i, j, (i == trump)));
+    Deck(){
+        trump = pickTrump();
+        for(Suit suit: Suit.values()){
+            for(Value value: Value.values()){
+                cards.add(new Card(suit, value, (suit == trump)));
             }
         }
-        Collections.shuffle(deck);
+        Collections.shuffle(cards);
     }
 
-    Card get(){
-        Card ret = deck.get(deck.size() - 1);
-        deck.remove(ret);
-        return ret;
+    private Suit pickTrump(){
+        return Suit.values()[(int) (Math.random() * Suit.values().length)];
     }
 
-    int cardsLeft(){
-        return deck.size();
+    Card getCard(){
+        return cards.pop();
+    }
+
+    int size(){
+        return cards.size();
     }
 }

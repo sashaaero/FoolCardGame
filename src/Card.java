@@ -1,11 +1,15 @@
-public class Card {
-    int suit;
-    int value;
+class Card {
+    Suit suit;
+    Value value;
     boolean trump;
 
-    Card(int suit, int value, boolean trump){
-        suit = suit;
-        value = value;
-        trump = trump;
+    Card(Suit suit, Value value, boolean trump){
+        this.suit = suit;
+        this.value = value;
+        this.trump = trump;
+    }
+
+    public String toString(){
+        return suit.toString() + ": " + value.toString();
     }
 }
