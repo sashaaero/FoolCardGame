@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 class GameTable extends JFrame{
     private Deck deck;
@@ -8,14 +10,14 @@ class GameTable extends JFrame{
 
     private Constants turn;
 
+    /* GUI */
+    private Background background;
+
     GameTable(){
         deck = new Deck();
         player = new Player(deck);
         bot = new Bot(deck);
         pickTrump();
-        player.printCards();
-        bot.printCards();
-
         initGUI();
     }
 
@@ -23,6 +25,11 @@ class GameTable extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1024, 768);
         this.setLocationRelativeTo(null);
+        this.setTitle("Игра «Дурак» - Курсовая работа Гетмана Антона");
+        this.setLayout(new GridLayout(1, 1));
+        background = new Background();
+        this.add(background);
+
         this.setVisible(true);
     }
 
@@ -58,5 +65,43 @@ class GameTable extends JFrame{
             }
         }
         // TODO ВЫБРАТЬ ТОГО, У КОГО МЕНЬШЕ))) У ПАШИ МЕНЬШЕ)))
+    }
+
+    class Background extends JPanel{
+        BufferedImage bg = Resources.getImage("background");
+        protected void paintComponent(Graphics g){
+            for(int x = 0; x < getWidth(); x += bg.getWidth()){
+                for(int y = 0; y < getHeight(); y += bg.getHeight()){
+                    g.drawImage(bg, x, y, null);
+                }
+            }
+        }
+
+        protected void paintBorder(Graphics g){
+            /* Рисуем карты игрока */
+            int maxWidth = (int) (getWidth() * 0.9);
+            int size = player.getCards().size();
+            int imageWidth = Resources.getImage("spades/six").getWidth();
+            int imageHeight = Resources.getImage("spades/six").getHeight();
+            int actualWidth = size * imageWidth;
+            if (actualWidth <= maxWidth){
+                /* Без перекрытия */
+                int startPosition = (getWidth() - actualWidth) / 2;
+                for(int i = 0; i < size; i++){
+                    g.drawImage(
+                            player.getCards().get(i).image(),
+                            startPosition + i * imageWidth,
+                            getHeight() - (int) (imageHeight * 0.75),
+                            null
+                    );
+                }
+            } else {
+                /* Приходится перерасчитывать и перекрывать */
+            }
+        }
+    }
+
+    class CardLayout extends JPanel{
+
     }
 }

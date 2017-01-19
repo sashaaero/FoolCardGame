@@ -1,6 +1,6 @@
 enum Suit {
-    heart,   // Червы
-    diamond, // Бубны
-    club,    // Трефы
-    spade // Пики
+    hearts,   // Червы
+    diamonds, // Бубны
+    clubs,    // Трефы
+    spades // Пики
 }
