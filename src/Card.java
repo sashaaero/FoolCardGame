@@ -4,8 +4,8 @@ class Card {
     Suit suit;
     Value value;
 
-    /* Ограничивающие карту линии */
-    
+    /* Ограничивающие карту линии?!?! */
+
 
     Card(Suit suit, Value value){
         this.suit = suit;
