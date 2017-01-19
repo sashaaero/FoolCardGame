@@ -20,7 +20,10 @@ class GameTable extends JFrame{
     }
 
     private void initGUI(){
-        ;
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(1024, 768);
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
     }
 
     private void pickTrump(){
