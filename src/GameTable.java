@@ -102,7 +102,7 @@ class GameTable extends JFrame{
             /* Рисуем карты бота */
             size = bot.getCards().size();
             actualWidth = size * imageWidth;
-            if (actualWidth <= maxWidth){
+            if (actualWidth <= maxWidth){ 
                 int startPosition = (getWidth() - actualWidth) / 2;
                 for(int i = 0; i < size; i++){
                     g.drawImage(
