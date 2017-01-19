@@ -1,18 +1,10 @@
-import java.util.LinkedList;
-import java.util.List;
+class Bot extends BasePlayer {
+    public Bot(Deck deck){
+        super(deck);
+    }
 
-class Bot {
-    List<Card> cards = new LinkedList<>();
-
-    Bot(Deck deck){
-        for(int i = 0; i < Main.defaultCardsAmount; i++){
-            cards.add(deck.getCard());
-        }
-
-
+    void printCards(){
         System.out.println("Bot have");
-        for(Card card: cards){
-            System.out.println(card);
-        }
+        super.printCards();
     }
 }

@@ -1,14 +1,59 @@
-public class GameTable {
-    Deck deck;
-    Player player;
-    Bot bot;
+import javax.swing.*;
 
-    public GameTable(){
+class GameTable extends JFrame{
+    private Deck deck;
+    private Player player;
+    private Bot bot;
+    private Suit trump;
+
+    private Constants turn;
+
+    GameTable(){
         deck = new Deck();
         player = new Player(deck);
         bot = new Bot(deck);
+        pickTrump();
+        player.printCards();
+        bot.printCards();
 
-        System.out.print("cards left ");
-        System.out.println(deck.size());
+        initGUI();
+    }
+
+    private void initGUI(){
+        ;
+    }
+
+    private void pickTrump(){
+        Card next = deck.getCard(); // Берем следующую
+        trump = next.suit; // Делаем ее масть козырем
+        deck.add(next); // Кладем в конец
+    }
+
+    public Suit getTrump(){
+        return trump;
+    }
+
+    private void setFirstTurn(){
+        // Находим у кого меньший козырь
+        Value botsMin = null, playersMin = null;
+        for(Card card: bot.getCards()){
+            if (card.suit == trump){
+                if (botsMin == null){
+                    botsMin = card.value;
+                } else if (botsMin.ordinal() < card.value.ordinal()) {
+                    botsMin = card.value;
+                }
+            }
+        }
+        for(Card card: player.getCards()){
+            if (card.suit == trump){
+                if (playersMin == null){
+                    playersMin = card.value;
+                } else if (playersMin.ordinal() < card.value.ordinal()){
+                    playersMin = card.value;
+                }
+            }
+        }
+        // TODO ВЫБРАТЬ ТОГО, У КОГО МЕНЬШЕ))) У ПАШИ МЕНЬШЕ)))
     }
 }

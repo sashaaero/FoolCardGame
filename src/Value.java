@@ -1,11 +1,11 @@
-enum Value {
+enum Value{
     six,
     seven,
     eight,
     nine,
     ten,
-    jack,
-    queen,
-    king,
-    ace
+    jack, // Валет
+    queen, // Дама
+    king, // Король
+    ace; // Туз
 }

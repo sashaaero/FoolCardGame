@@ -1,25 +1,23 @@
 import java.util.*;
 
 class Deck {
-    public static Stack<Card> cards = new Stack<>();
-    private Suit trump;
+    public static List<Card> cards = new ArrayList<>();
 
     Deck(){
-        trump = pickTrump();
         for(Suit suit: Suit.values()){
             for(Value value: Value.values()){
-                cards.add(new Card(suit, value, (suit == trump)));
+                cards.add(new Card(suit, value));
             }
         }
         Collections.shuffle(cards);
     }
 
-    private Suit pickTrump(){
-        return Suit.values()[(int) (Math.random() * Suit.values().length)];
+    Card getCard(){
+        return cards.remove(0);
     }
 
-    Card getCard(){
-        return cards.pop();
+    void add(Card c){
+        cards.add(c);
     }
 
     int size(){

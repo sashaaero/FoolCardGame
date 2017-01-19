@@ -3,10 +3,9 @@ class Card {
     Value value;
     boolean trump;
 
-    Card(Suit suit, Value value, boolean trump){
+    Card(Suit suit, Value value){
         this.suit = suit;
         this.value = value;
-        this.trump = trump;
     }
 
     public String toString(){
