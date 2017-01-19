@@ -91,12 +91,27 @@ class GameTable extends JFrame{
                     g.drawImage(
                             player.getCards().get(i).image(),
                             startPosition + i * imageWidth,
-                            getHeight() - (int) (imageHeight * 0.75),
+                            getHeight() - (int) (imageHeight * 0.58),
                             null
                     );
                 }
             } else {
                 /* Приходится перерасчитывать и перекрывать */
+            }
+
+            /* Рисуем карты бота */
+            size = bot.getCards().size();
+            actualWidth = size * imageWidth;
+            if (actualWidth <= maxWidth){
+                int startPosition = (getWidth() - actualWidth) / 2;
+                for(int i = 0; i < size; i++){
+                    g.drawImage(
+                            Resources.getImage("back"),
+                            startPosition + i * imageWidth,
+                             -(int) (imageHeight * 0.25),
+                            null
+                    );
+                }
             }
         }
     }
