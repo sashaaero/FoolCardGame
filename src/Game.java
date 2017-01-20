@@ -19,14 +19,23 @@ class Game extends JFrame{
     /* GUI */
     private Background background;
 
-    Game(){
+    /* Singleton */
+    private static Game instance = null;
+
+    private Game(){
         deck = new Deck();
         player = new Player(deck);
         bot = new Bot(deck);
         pickTrump();
         setFirstTurn();
         initGUI();
-        play();
+    }
+
+    public static Game getInstance(){
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
     }
 
     private void initGUI(){
@@ -89,6 +98,7 @@ class Game extends JFrame{
         } else if(botsMin != null && playersMin != null){ // У обоих есть
             if (botsMin.ordinal() < playersMin.ordinal()){
                 turn = Turn.bot;
+                bot.attack();
             } else {
                 turn = Turn.player;
             }
@@ -96,7 +106,37 @@ class Game extends JFrame{
             turn = Turn.player;
         } else {
             turn = Turn.bot;
+            bot.attack();
         }
+    }
+
+    Set<Value> valuesOnTable(){
+        Set<Value> values = new HashSet<>();
+        for(Card card1: attackCards){
+            values.add(card1.value);
+        }
+        for(Card card1: defenceCards){
+            values.add(card1.value);
+        }
+        return values;
+    }
+
+    boolean ableToAttack(Turn turn){
+        Set<Value> values = valuesOnTable();
+        if (turn == Turn.player){
+            for(Card card: player.getCards()){
+                if(values.contains(card.value)){
+                    return true;
+                }
+            }
+        } else {
+            for(Card card: bot.getCards()){
+                if(values.contains(card.value)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     void attack(Card card){
@@ -109,13 +149,7 @@ class Game extends JFrame{
                 bot.getCards().remove(card);
             }
         } else {
-            Set<Value> values = new HashSet<>();
-            for(Card card1: attackCards){
-                values.add(card1.value);
-            }
-            for(Card card1: defenceCards){
-                values.add(card1.value);
-            }
+            Set<Value> values = valuesOnTable();
             if (values.contains(card.value)){
                 attackCards.add(card);
                 if(turn == Turn.player){
@@ -130,7 +164,7 @@ class Game extends JFrame{
     }
 
     void defend(Card card){
-        
+
     }
 
     void play(){
