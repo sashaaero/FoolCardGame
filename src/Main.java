@@ -1,7 +1,7 @@
 public class Main {
-    public static int defaultCardsAmount = 8;
+    public static int defaultCardsAmount = 13;
 
     public static void main(String[] args) {
-        new GameTable();
+        new Game();
     }
 }
