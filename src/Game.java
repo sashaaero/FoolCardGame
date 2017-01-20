@@ -12,6 +12,7 @@ class Game extends JFrame{
     private Bot bot;
     private Suit trump;
     private Turn turn = Turn.player;
+    private State state = State.attack;
     private List<Card> attackCards = new LinkedList<>();
     private List<Card> defenceCards = new LinkedList<>();
 
@@ -23,7 +24,9 @@ class Game extends JFrame{
         player = new Player(deck);
         bot = new Bot(deck);
         pickTrump();
+        setFirstTurn();
         initGUI();
+        play();
     }
 
     private void initGUI(){
@@ -59,10 +62,6 @@ class Game extends JFrame{
         deck.add(next); // Кладем в конец
     }
 
-    public Suit getTrump(){
-        return trump;
-    }
-
     private void setFirstTurn(){
         // Находим у кого меньший козырь
         Value botsMin = null, playersMin = null;
@@ -84,22 +83,58 @@ class Game extends JFrame{
                 }
             }
         }
-        // TODO ВЫБРАТЬ ТОГО, У КОГО МЕНЬШЕ))) У ПАШИ МЕНЬШЕ)))
+
+        if (botsMin == null && playersMin == null){ // Ни у кого нет козыря
+            turn = Turn.player;
+        } else if(botsMin != null && playersMin != null){ // У обоих есть
+            if (botsMin.ordinal() < playersMin.ordinal()){
+                turn = Turn.bot;
+            } else {
+                turn = Turn.player;
+            }
+        } else if (botsMin == null && playersMin != null){
+            turn = Turn.player;
+        } else {
+            turn = Turn.bot;
+        }
     }
 
     void attack(Card card){
-        //if(attackCards.isEmpty()){
+        if(attackCards.isEmpty()){
             // Первый ход, фильтр пустой
             attackCards.add(card);
             if(turn == Turn.player){
                 player.getCards().remove(card);
+            } else {
+                bot.getCards().remove(card);
             }
-            background.repaint();
-        //}
+        } else {
+            Set<Value> values = new HashSet<>();
+            for(Card card1: attackCards){
+                values.add(card1.value);
+            }
+            for(Card card1: defenceCards){
+                values.add(card1.value);
+            }
+            if (values.contains(card.value)){
+                attackCards.add(card);
+                if(turn == Turn.player){
+                    player.getCards().remove(card);
+                } else {
+                    bot.getCards().remove(card);
+                }
+                state = State.defence;
+            }
+        }
+        background.repaint();
     }
 
     void defend(Card card){
-        ;
+        
+    }
+
+    void play(){
+
     }
 
     class Background extends JPanel{
@@ -192,16 +227,33 @@ class Game extends JFrame{
                 } else {
                     g.drawImage(
                             attackCards.get(i).image(),
-                            (int) (startPosition + i * imageWidth * 0.75),
+                            startPosition + i * (imageWidth + 10),
+                            (int) ((getHeight() - imageHeight) / 2 - imageHeight * 0.5),
+                            null
+                    );
+                }
+            }
+
+            size = defenceCards.size();
+            startPosition = (getWidth() - size * imageWidth) / 2 + (int) (imageWidth * 0.1);
+
+            for (int i = 0; i < size; i++){
+                if (turn == Turn.player){
+                    g.drawImage(
+                            defenceCards.get(i).image(),
+                            startPosition + i * (imageWidth + 10),
+                            (int) ((getHeight() - imageHeight) / 2 + imageHeight * 0.5),
+                            null
+                    );
+                } else {
+                    g.drawImage(
+                            defenceCards.get(i).image(),
+                            startPosition + i * (imageWidth + 10),
                             (int) ((getHeight() - imageHeight) / 2 - imageHeight * 0.5),
                             null
                     );
                 }
             }
         }
-    }
-
-    class CardLayout extends JPanel{
-
     }
 }
