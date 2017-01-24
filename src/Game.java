@@ -50,15 +50,22 @@ class Game extends JFrame{
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                super.mouseReleased(e);
-                int x = e.getX();
-                int y = e.getY();
-                for(int i = 0; i < player.getCards().size(); i++){
-                    if (player.getCards().get(i).isClicked(x, y)){
-                        attack(player.getCards().get(i));
-                        break;
+             super.mouseReleased(e);
+             int x = e.getX();
+             int y = e.getY();
+             if (turn == Turn.player && state == State.attack){
+                 // ПОЕХАЛИ
+             } else if (turn == Turn.bot && state == State.defence) {
+                 // Защита!!!
+             }
+
+                    for (int i = 0; i < player.getCards().size(); i++) {
+                        if (player.getCards().get(i).isClicked(x, y)) {
+                            attack(player.getCards().get(i));
+                            break;
+                        }
                     }
-                }
+
             }
         });
 
@@ -168,7 +175,9 @@ class Game extends JFrame{
     }
 
     void play(){
+        while (true){
 
+        }
     }
 
     class Background extends JPanel{

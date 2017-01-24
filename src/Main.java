@@ -2,6 +2,6 @@ public class Main {
     public static int defaultCardsAmount = 13;
 
     public static void main(String[] args) {
-        new Game();
+        Game.getInstance();
     }
 }

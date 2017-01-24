@@ -11,11 +11,14 @@ class Bot extends BasePlayer{
         super.printCards();
     }
 
-    void attack(){
+    /*void attack(){
         Set<Value> valueSet = Game.getInstance().valuesOnTable();
         if(valueSet.isEmpty()){
             // Ходим какой-то дешевой
         }
     }
 
+    void defend(){
+
+    }*/
 }

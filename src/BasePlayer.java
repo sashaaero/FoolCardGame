@@ -19,4 +19,12 @@ class BasePlayer {
     List<Card> getCards(){
         return this.cards;
     }
+
+    Card attack(){
+        return null;
+    }
+
+    Card defend(Card card){
+        return null;
+    }
 }

@@ -7,4 +7,12 @@ public class Player extends BasePlayer {
         System.out.println("Player have");
         super.printCards();
     }
+
+    Card attack(Card card){
+        return null;
+    }
+
+    Card defend(Card card){
+
+    }
 }
