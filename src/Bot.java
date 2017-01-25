@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +19,7 @@ class Bot extends BasePlayer{
         for (Card card: cards){
             /* Если козырь, добавим кол-во значений, чтобы карта была больше любой некозырной */
             int currValue = extractValue(card);
-            if (currValue < min.value.ordinal()){
+            if (currValue < extractValue(min)){
                 min = card;
             }
         }
@@ -49,6 +50,10 @@ class Bot extends BasePlayer{
     }
 
     void attack(){
+        if(Game.getInstance().deck.size() == 0 && cards.size() == 0){
+            JOptionPane.showMessageDialog(Game.getInstance(), "Победил бот");
+            return;
+        }
         Card cardToAttack = pickCardToAttack();
         if (cardToAttack == null){ // Нечем атаковать, ход закончен
             Game.getInstance().clearTable();
@@ -77,7 +82,7 @@ class Bot extends BasePlayer{
             }
         } else {
             for (Card c: cards){
-                if (c.suit == attackCard.suit && c.value.ordinal() > attackCard.value.ordinal()
+                if ((c.suit == attackCard.suit && c.value.ordinal() > attackCard.value.ordinal())
                         || c.suit == Game.getInstance().trump){
                     filtered.add(c);
                 }
@@ -104,15 +109,15 @@ class Bot extends BasePlayer{
             // Выбираем меньшую
             int size = filtered.size();
             int index = 0;
-            int value = extractValue(cards.get(index));
+            int value = extractValue(filtered.get(index));
             for (int i = 1; i < size; i++){
-                int currValue = extractValue(cards.get(i));
+                int currValue = extractValue(filtered.get(i));
                 if (currValue < value){
                     index = i;
                     value = currValue;
                 }
             }
-            Card c = cards.get(index);
+            Card c = filtered.get(index);
             Game.getInstance().defenceCards.add(c);
             Game.getInstance().state = State.attack;
             cards.remove(c);

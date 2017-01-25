@@ -7,9 +7,9 @@ import java.util.*;
 import java.util.List;
 
 class Game extends JFrame{
-    private Deck deck;
-    private Player player;
-    private Bot bot;
+    Deck deck;
+    Player player;
+    Bot bot;
     Suit trump;
     Turn turn = Turn.player;
     State state = State.attack;
@@ -54,18 +54,18 @@ class Game extends JFrame{
              super.mouseReleased(e);
              int x = e.getX();
              int y = e.getY();
-             if (turn == Turn.player && state == State.attack){
-                 // Мы атакуем
-             } else if (turn == Turn.bot && state == State.defence) {
-                 // Защита!!!
+             if (x > 10 && x < 100 && y >= getHeight() / 2 && y <= (getHeight() / 2) + 20){
+                 buttonClicked();
              }
 
-                    /*for (int i = 0; i < player.getCards().size(); i++) {
-                        if (player.getCards().get(i).isClicked(x, y)) {
-                            player.attack(player.getCards().get(i));
-                            break;
-                        }
-                    }*/
+             if (turn == Turn.player && state == State.attack){
+                 player.attack(x, y);
+             } else if (turn == Turn.bot && state == State.defence) {
+                 if(attackCards.size() > defenceCards.size()) {
+                     Card attackCard = attackCards.get(attackCards.size() - 1);
+                     player.defend(attackCard, x, y);
+                 }
+             }
 
             }
         });
@@ -73,12 +73,27 @@ class Game extends JFrame{
         this.setVisible(true);
     }
 
+    void buttonClicked(){
+        if (turn == Turn.player && state == State.attack){
+            clearTable(); // Бито
+            turn = Turn.bot;
+            bot.attack();
+        } else if (turn == Turn.bot && state == State.defence) {
+            for (Card c: attackCards){
+                player.addCard(c);
+            }
+            for (Card c: defenceCards){
+                player.addCard(c);
+            }
+            clearTable();
+            state = State.attack;
+            bot.attack();
+        }
+    }
+
     public void start(){
         if(turn == Turn.bot){
             bot.attack();
-        }
-        while(true){
-
         }
     }
 
@@ -88,12 +103,20 @@ class Game extends JFrame{
         this.repaint();
 
         if (turn == Turn.bot){
-            while(bot.getCards().size() <= 6 && deck.size() > 0){
+            while (bot.getCards().size() < Main.defaultCardsAmount && deck.size() > 0){
                 bot.addCard(deck.getCard());
             }
 
-            while(player.getCards().size() <= 6 && deck.size() > 0){
+            while (player.getCards().size() < Main.defaultCardsAmount && deck.size() > 0){
                 player.addCard(deck.getCard());
+            }
+        } else {
+            while (player.getCards().size() < Main.defaultCardsAmount && deck.size() > 0){
+                player.addCard(deck.getCard());
+            }
+
+            while (bot.getCards().size() < Main.defaultCardsAmount && deck.size() > 0){
+                bot.addCard(deck.getCard());
             }
         }
     }
@@ -153,49 +176,6 @@ class Game extends JFrame{
         return values;
     }
 
-    boolean ableToAttack(Turn turn){
-        Set<Value> values = valuesOnTable();
-        if (turn == Turn.player){
-            for(Card card: player.getCards()){
-                if(values.contains(card.value)){
-                    return true;
-                }
-            }
-        } else {
-            for(Card card: bot.getCards()){
-                if(values.contains(card.value)){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /*void attack(Card card){
-        if(attackCards.isEmpty()){
-            // Первый ход, фильтр пустой
-            attackCards.add(card);
-            if(turn == Turn.player){
-                player.getCards().remove(card);
-            } else {
-                bot.getCards().remove(card);
-            }
-        } else {
-            Set<Value> values = valuesOnTable();
-            if (values.contains(card.value)){
-                attackCards.add(card);
-                if(turn == Turn.player){
-                    player.getCards().remove(card);
-                } else {
-                    bot.getCards().remove(card);
-                }
-                state = State.defence;
-            }
-        }
-        background.repaint();
-        bot.defend();
-    }*/
-
     class Background extends JPanel{
         double cardHeightCf = 0.75;
         BufferedImage bg = Resources.getImage("background");
@@ -251,7 +231,7 @@ class Game extends JFrame{
                 int startPosition = (getWidth() - actualWidth) / 2;
                 for (int i = 0; i < size; i++) {
                     g.drawImage(
-                            /*Resources.getImage("back")*/bot.getCards().get(i).image(),
+                            Resources.getImage("back"),
                             startPosition + i * imageWidth,
                             -(int) (imageHeight * (1.0 - cardHeightCf)),
                             null
@@ -262,28 +242,35 @@ class Game extends JFrame{
                 int startPosition = (getWidth() - maxWidth) / 2;
                 for (int i = 0; i < size; i++) {
                     g.drawImage(
-                            /*Resources.getImage("back")*/bot.getCards().get(i).image(),
+                            Resources.getImage("back"),
                             (int) (startPosition + (i * imageWidth * shift)),
                             -(int) (imageHeight * (1.0 - cardHeightCf)),
                             null
                     );
                 }
             }
-            /* Рисуем колоду */
-            BufferedImage trump = deck.trump.image();
-            int leftBorder = getWidth() - imageWidth / 2;
-            int topBorder = (getHeight() - imageHeight) / 2;
-            g.drawImage(trump, leftBorder, topBorder, null);
 
-
-            BufferedImage image = Resources.getImage("back_90");
-            leftBorder = getWidth() - (int) (image.getWidth() * 0.7);
-            topBorder = getHeight() / 2;
-            g.drawImage(image, leftBorder, topBorder, this);
             g.setFont(new Font("Arial", Font.BOLD, 24));
             g.setColor(Color.white);
-            if(deck.size() > 1) {
-                g.drawString(Integer.toString(deck.size()), leftBorder, topBorder - image.getHeight() / 2);
+            /* Рисуем колоду */
+            if (deck.size() > 0) {
+                BufferedImage trump = deck.trump.image();
+                int leftBorder = getWidth() - imageWidth / 2;
+                int topBorder = (getHeight() - imageHeight) / 2;
+                g.drawImage(trump, leftBorder, topBorder, null);
+
+                if (deck.size() > 1) {
+                    BufferedImage image = Resources.getImage("back_90");
+                    leftBorder = getWidth() - (int) (image.getWidth() * 0.7);
+                    topBorder = getHeight() / 2;
+                    g.drawImage(image, leftBorder, topBorder, this);
+                    g.setFont(new Font("Arial", Font.BOLD, 24));
+                    g.setColor(Color.white);
+                    g.drawString(Integer.toString(deck.size()), leftBorder, topBorder - image.getHeight() / 2);
+                }
+            } else {
+                if (trump.toString().equals("clubs")){
+                }
             }
 
             //for(int i = 0; i < deck.size(); i++){
@@ -328,7 +315,6 @@ class Game extends JFrame{
             }
 
             size = defenceCards.size();
-            System.out.println(size);
             startPosition = (getWidth() - size * imageWidth) / 2 + (int) (imageWidth * 0.1);
 
             for (int i = 0; i < size; i++){
