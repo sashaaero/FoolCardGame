@@ -22,6 +22,10 @@ class Game extends JFrame{
     /* Singleton */
     private static Game instance = null;
 
+    public static void reinit(){
+        instance = new Game();
+    }
+
     private Game(){
         deck = new Deck();
         player = new Player(deck);
@@ -269,8 +273,11 @@ class Game extends JFrame{
                     g.drawString(Integer.toString(deck.size()), leftBorder, topBorder - image.getHeight() / 2);
                 }
             } else {
-                if (trump.toString().equals("clubs")){
-                }
+                BufferedImage trumpImage = Resources.getImage(trump.toString());
+                g.drawImage(trumpImage,
+                        getWidth() - trumpImage.getWidth() - 5,
+                        (getHeight() - trumpImage.getHeight()) / 2,
+                        this);
             }
 
             //for(int i = 0; i < deck.size(); i++){
@@ -295,49 +302,45 @@ class Game extends JFrame{
             int imageWidth = Resources.getImage("spades/six").getWidth();
             int imageHeight = Resources.getImage("spades/six").getHeight();
             /* Тут не перерасчета и сдвигов по ширине т.к. не больше 6 карт */
-            int startPosition = (getWidth() - size * imageWidth) / 2 - (int) (imageWidth * 0.1);
+            int startPosition = (getWidth() - size * imageWidth) / 2;
             for (int i = 0; i < size; i++){
                 if(turn == Turn.player){
                     g.drawImage(
                             attackCards.get(i).image(),
                             startPosition + i * (imageWidth + 10),
                             (int) ((getHeight() - imageHeight) / 2 + imageHeight * 0.5),
-                            null
+                            this
                     );
                 } else {
                     g.drawImage(
                             attackCards.get(i).image(),
                             startPosition + i * (imageWidth + 10),
-                            (int) ((getHeight() - imageHeight) / 2 - imageHeight * 0.5),
-                            null
+                            (int) ((getHeight() - imageHeight) / 2),
+                            this
                     );
                 }
             }
 
             size = defenceCards.size();
-            startPosition = (getWidth() - size * imageWidth) / 2 + (int) (imageWidth * 0.1);
+            //startPosition = (getWidth() - size * imageWidth) / 2;
 
             for (int i = 0; i < size; i++){
                 if (turn == Turn.player){
                     g.drawImage(
                             defenceCards.get(i).image(),
                             startPosition + i * (imageWidth + 10),
-                            (int) ((getHeight() - imageHeight) / 2 + imageHeight * 0.5),
-                            null
+                            (int) ((getHeight() - imageHeight) / 2),
+                            this
                     );
                 } else {
                     g.drawImage(
                             defenceCards.get(i).image(),
                             startPosition + i * (imageWidth + 10),
                             (int) ((getHeight() - imageHeight) / 2 - imageHeight * 0.5),
-                            null
+                            this
                     );
                 }
             }
         }
     }
 }
-
-/*
-    Я петух...
- */

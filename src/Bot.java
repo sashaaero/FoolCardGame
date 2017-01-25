@@ -52,6 +52,7 @@ class Bot extends BasePlayer{
     void attack(){
         if(Game.getInstance().deck.size() == 0 && cards.size() == 0){
             JOptionPane.showMessageDialog(Game.getInstance(), "Победил бот");
+            Game.reinit();
             return;
         }
         Card cardToAttack = pickCardToAttack();
@@ -121,6 +122,10 @@ class Bot extends BasePlayer{
             Game.getInstance().defenceCards.add(c);
             Game.getInstance().state = State.attack;
             cards.remove(c);
+        }
+        if (Game.getInstance().deck.size() == 0 && cards.size() == 0){
+            JOptionPane.showMessageDialog(Game.getInstance(), "Победил бот!");
+            Game.reinit();
         }
     }
 }

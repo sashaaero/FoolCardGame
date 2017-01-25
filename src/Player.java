@@ -29,8 +29,6 @@ public class Player extends BasePlayer {
     }
 
     void sendDefend(Card card){
-        System.out.print("Отбиваем используя ");
-        System.out.println(card);
         Game.getInstance().defenceCards.add(card);
         Game.getInstance().state = State.attack;
         cards.remove(card);
@@ -51,11 +49,14 @@ public class Player extends BasePlayer {
                 sendAttack(card);
             }
         }
+        if (Game.getInstance().deck.size() == 0 && cards.size() == 0){
+            JOptionPane.showMessageDialog(Game.getInstance(), "Победа!");
+            Game.reinit();
+        }
+
     }
 
     void defend(Card attackCard, int x, int y){
-        System.out.print("Надо отбить ");
-        System.out.println(attackCard);
         Card card = clickedCard(x, y);
         if (card == null)
             return;
@@ -74,6 +75,7 @@ public class Player extends BasePlayer {
         }
         if (Game.getInstance().deck.size() == 0 && cards.size() == 0){
             JOptionPane.showMessageDialog(Game.getInstance(), "Победа!");
+            Game.reinit();
         }
     }
 }
