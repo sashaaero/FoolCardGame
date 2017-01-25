@@ -35,7 +35,6 @@ class Game extends JFrame{
         instance = new Game();
     }
 
-
     public static Game getInstance(){
         return instance;
     }
@@ -61,12 +60,12 @@ class Game extends JFrame{
                  // Защита!!!
              }
 
-                    for (int i = 0; i < player.getCards().size(); i++) {
+                    /*for (int i = 0; i < player.getCards().size(); i++) {
                         if (player.getCards().get(i).isClicked(x, y)) {
-                            attack(player.getCards().get(i));
+                            player.attack(player.getCards().get(i));
                             break;
                         }
-                    }
+                    }*/
 
             }
         });
@@ -74,8 +73,29 @@ class Game extends JFrame{
         this.setVisible(true);
     }
 
+    public void start(){
+        if(turn == Turn.bot){
+            bot.attack();
+        }
+        while(true){
+
+        }
+    }
+
     public void clearTable(){
-        ;
+        attackCards.clear();
+        defenceCards.clear();
+        this.repaint();
+
+        if (turn == Turn.bot){
+            while(bot.getCards().size() <= 6 && deck.size() > 0){
+                bot.addCard(deck.getCard());
+            }
+
+            while(player.getCards().size() <= 6 && deck.size() > 0){
+                player.addCard(deck.getCard());
+            }
+        }
     }
 
     private void pickTrump(){
@@ -112,7 +132,6 @@ class Game extends JFrame{
         } else if(botsMin != null && playersMin != null){ // У обоих есть
             if (botsMin.ordinal() < playersMin.ordinal()){
                 turn = Turn.bot;
-                bot.attack();
             } else {
                 turn = Turn.player;
             }
@@ -120,7 +139,6 @@ class Game extends JFrame{
             turn = Turn.player;
         } else {
             turn = Turn.bot;
-            bot.attack();
         }
     }
 
@@ -153,7 +171,7 @@ class Game extends JFrame{
         return false;
     }
 
-    void attack(Card card){
+    /*void attack(Card card){
         if(attackCards.isEmpty()){
             // Первый ход, фильтр пустой
             attackCards.add(card);
@@ -175,17 +193,8 @@ class Game extends JFrame{
             }
         }
         background.repaint();
-    }
-
-    void defend(Card card){
-
-    }
-
-    void play(){
-        while (true){
-
-        }
-    }
+        bot.defend();
+    }*/
 
     class Background extends JPanel{
         double cardHeightCf = 0.75;
@@ -319,6 +328,7 @@ class Game extends JFrame{
             }
 
             size = defenceCards.size();
+            System.out.println(size);
             startPosition = (getWidth() - size * imageWidth) / 2 + (int) (imageWidth * 0.1);
 
             for (int i = 0; i < size; i++){

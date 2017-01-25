@@ -8,11 +8,20 @@ public class Player extends BasePlayer {
         super.printCards();
     }
 
-    Card attack(Card card){
+    Card clickedCard(int x, int y){
+        for (Card c: cards){
+            if (c.isClicked(x, y)){
+                return c;
+            }
+        }
         return null;
     }
 
-    Card defend(Card card){
-        return null;
+    void attack(int x, int y){
+        //Card card =
+    }
+
+    void defend(Card card){
+
     }
 }

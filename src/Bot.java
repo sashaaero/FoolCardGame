@@ -17,8 +17,7 @@ class Bot extends BasePlayer{
         Card min = cards.get(0);
         for (Card card: cards){
             /* Если козырь, добавим кол-во значений, чтобы карта была больше любой некозырной */
-            int currValue = card.suit == Game.getInstance().trump ?
-                    card.value.ordinal() + Value.values().length : card.value.ordinal();
+            int currValue = extractValue(card);
             if (currValue < min.value.ordinal()){
                 min = card;
             }
@@ -44,6 +43,11 @@ class Bot extends BasePlayer{
         }
     }
 
+    private static int extractValue(Card card){
+        return card.suit == Game.getInstance().trump ?
+                card.value.ordinal() + Value.values().length : card.value.ordinal();
+    }
+
     void attack(){
         Card cardToAttack = pickCardToAttack();
         if (cardToAttack == null){ // Нечем атаковать, ход закончен
@@ -58,6 +62,9 @@ class Bot extends BasePlayer{
     }
 
     void defend(){
+        if(Game.getInstance().attackCards.size() == Game.getInstance().defenceCards.size())
+            return;
+
         Card attackCard = Game.getInstance().attackCards.get(
                 Game.getInstance().attackCards.size() - 1
         );
@@ -83,7 +90,7 @@ class Bot extends BasePlayer{
                 cards.add(c1);
             }
             for (Card c2: Game.getInstance().defenceCards){
-                cards.add(c2); 
+                cards.add(c2);
             }
             Game.getInstance().clearTable();
             Game.getInstance().turn = Turn.player;
@@ -92,16 +99,23 @@ class Bot extends BasePlayer{
             // Отбиваемся этой шмалью
             Game.getInstance().defenceCards.add(filtered.get(0));
             Game.getInstance().state = State.attack;
+            cards.remove(filtered.get(0));
         } else {
             // Выбираем меньшую
             int size = filtered.size();
             int index = 0;
-            int value = cards.get(index).suit == Game.getInstance().trump ?
-                    filtered.get(index).value.ordinal() + Value.values().length : filtered.get(index).value.ordinal();
+            int value = extractValue(cards.get(index));
             for (int i = 1; i < size; i++){
-                int currValue = cards.get(i).suit == Game.getInstance().trump ?
-                        cards.get(i).value.ordinal() + Value.values().length : cards.get(i).value.ordinal();
+                int currValue = extractValue(cards.get(i));
+                if (currValue < value){
+                    index = i;
+                    value = currValue;
+                }
             }
+            Card c = cards.get(index);
+            Game.getInstance().defenceCards.add(c);
+            Game.getInstance().state = State.attack;
+            cards.remove(c);
         }
     }
 }

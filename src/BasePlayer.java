@@ -11,6 +11,10 @@ class BasePlayer {
         }
     }
 
+    void addCard(Card c){
+        cards.add(c);
+    }
+
     void printCards(){
         for(Card card: cards)
             System.out.println(card);
