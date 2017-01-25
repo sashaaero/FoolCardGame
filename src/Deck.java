@@ -1,7 +1,8 @@
 import java.util.*;
 
 class Deck {
-    public static List<Card> cards = new ArrayList<>();
+    List<Card> cards = new ArrayList<>();
+    Card trump;
 
     Deck(){
         for(Suit suit: Suit.values()){
@@ -10,6 +11,10 @@ class Deck {
             }
         }
         Collections.shuffle(cards);
+    }
+
+    void setTrump(Card card){
+        trump = card;
     }
 
     Card getCard(){

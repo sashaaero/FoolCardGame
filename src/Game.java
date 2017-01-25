@@ -10,11 +10,11 @@ class Game extends JFrame{
     private Deck deck;
     private Player player;
     private Bot bot;
-    private Suit trump;
-    private Turn turn = Turn.player;
-    private State state = State.attack;
-    private List<Card> attackCards = new LinkedList<>();
-    private List<Card> defenceCards = new LinkedList<>();
+    Suit trump;
+    Turn turn = Turn.player;
+    State state = State.attack;
+    List<Card> attackCards = new LinkedList<>();
+    List<Card> defenceCards = new LinkedList<>();
 
     /* GUI */
     private Background background;
@@ -31,10 +31,12 @@ class Game extends JFrame{
         initGUI();
     }
 
+    public static void init(){
+        instance = new Game();
+    }
+
+
     public static Game getInstance(){
-        if (instance == null) {
-            instance = new Game();
-        }
         return instance;
     }
 
@@ -54,7 +56,7 @@ class Game extends JFrame{
              int x = e.getX();
              int y = e.getY();
              if (turn == Turn.player && state == State.attack){
-                 // ПОЕХАЛИ
+                 // Мы атакуем
              } else if (turn == Turn.bot && state == State.defence) {
                  // Защита!!!
              }
@@ -72,10 +74,15 @@ class Game extends JFrame{
         this.setVisible(true);
     }
 
+    public void clearTable(){
+        ;
+    }
+
     private void pickTrump(){
         Card next = deck.getCard(); // Берем следующую
         trump = next.suit; // Делаем ее масть козырем
         deck.add(next); // Кладем в конец
+        deck.setTrump(next);
     }
 
     private void setFirstTurn(){
@@ -85,7 +92,7 @@ class Game extends JFrame{
             if (card.suit == trump){
                 if (botsMin == null){
                     botsMin = card.value;
-                } else if (botsMin.ordinal() < card.value.ordinal()) {
+                } else if (botsMin.ordinal() > card.value.ordinal()) {
                     botsMin = card.value;
                 }
             }
@@ -94,7 +101,7 @@ class Game extends JFrame{
             if (card.suit == trump){
                 if (playersMin == null){
                     playersMin = card.value;
-                } else if (playersMin.ordinal() < card.value.ordinal()){
+                } else if (playersMin.ordinal() > card.value.ordinal()){
                     playersMin = card.value;
                 }
             }
@@ -191,7 +198,9 @@ class Game extends JFrame{
             }
         }
 
-        protected void paintBorder(Graphics g) {
+        protected void paintBorder(Graphics g_) {
+            Graphics2D g = (Graphics2D) g_.create();
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             /* Рисуем карты игрока */
             int maxWidth = (int) (getWidth() * 0.8);
             int size = player.getCards().size();
@@ -233,7 +242,7 @@ class Game extends JFrame{
                 int startPosition = (getWidth() - actualWidth) / 2;
                 for (int i = 0; i < size; i++) {
                     g.drawImage(
-                            Resources.getImage("back"),
+                            /*Resources.getImage("back")*/bot.getCards().get(i).image(),
                             startPosition + i * imageWidth,
                             -(int) (imageHeight * (1.0 - cardHeightCf)),
                             null
@@ -244,12 +253,44 @@ class Game extends JFrame{
                 int startPosition = (getWidth() - maxWidth) / 2;
                 for (int i = 0; i < size; i++) {
                     g.drawImage(
-                            Resources.getImage("back"),
+                            /*Resources.getImage("back")*/bot.getCards().get(i).image(),
                             (int) (startPosition + (i * imageWidth * shift)),
                             -(int) (imageHeight * (1.0 - cardHeightCf)),
                             null
                     );
                 }
+            }
+            /* Рисуем колоду */
+            BufferedImage trump = deck.trump.image();
+            int leftBorder = getWidth() - imageWidth / 2;
+            int topBorder = (getHeight() - imageHeight) / 2;
+            g.drawImage(trump, leftBorder, topBorder, null);
+
+
+            BufferedImage image = Resources.getImage("back_90");
+            leftBorder = getWidth() - (int) (image.getWidth() * 0.7);
+            topBorder = getHeight() / 2;
+            g.drawImage(image, leftBorder, topBorder, this);
+            g.setFont(new Font("Arial", Font.BOLD, 24));
+            g.setColor(Color.white);
+            if(deck.size() > 1) {
+                g.drawString(Integer.toString(deck.size()), leftBorder, topBorder - image.getHeight() / 2);
+            }
+
+            //for(int i = 0; i < deck.size(); i++){
+                //g.drawImage(image, leftBorder + 1, topBorder + 1,this);
+            //} // Эффект колоды (некрасиво)
+
+            /* Кнопка бито/взять */
+            if(turn == Turn.bot){
+                g.drawString("Атака", 10, 20);
+                g.drawString("Взять", 10, getHeight() / 2);
+                g.drawString("Защита", 10, getHeight() - 10);
+
+            } else if(turn == Turn.player){
+                g.drawString("Защита", 10, 20);
+                g.drawString("Бито", 10, getHeight() / 2);
+                g.drawString("Атака", 10, getHeight() - 10);
             }
         }
 
@@ -300,3 +341,7 @@ class Game extends JFrame{
         }
     }
 }
+
+/*
+    Я петух...
+ */

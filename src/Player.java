@@ -13,6 +13,6 @@ public class Player extends BasePlayer {
     }
 
     Card defend(Card card){
-
+        return null;
     }
 }
