@@ -26,5 +26,3 @@ enum Value{
     king, // Король
     ace // Туз
 }
-
-

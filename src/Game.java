@@ -32,6 +32,7 @@ class Game extends JFrame{
         bot = new Bot(deck);
         pickTrump();
         setFirstTurn();
+        state = State.attack;
         initGUI();
     }
 
