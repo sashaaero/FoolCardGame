@@ -83,7 +83,7 @@ class Bot extends BasePlayer{
                 cards.add(c1);
             }
             for (Card c2: Game.getInstance().defenceCards){
-                cards.add(c2);
+                cards.add(c2); 
             }
             Game.getInstance().clearTable();
             Game.getInstance().turn = Turn.player;
