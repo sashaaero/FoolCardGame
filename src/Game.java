@@ -48,7 +48,7 @@ class Game extends JFrame{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1024, 768);
         this.setLocationRelativeTo(null);
-        this.setTitle("Игра «Дурак» - Курсовая работа Гетмана Антона");
+        this.setTitle("Карточная игра «Дурак» - Выполнил Ёлкин Александр");
         this.setLayout(new GridLayout(1, 1));
         background = new Background();
         this.add(background);
